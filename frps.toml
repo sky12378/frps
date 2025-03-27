@@ -1,35 +1,51 @@
+# ==============================
+# FRP 服务器端（frps.ini）配置
+# ==============================
+
+# 绑定监听地址（默认 `0.0.0.0` 代表监听所有 IP）
 bindAddr = "0.0.0.0"
-bindPort = 7000
-#kcpBindPort = 7000
-quicBindPort = 7000
 
-vhostHTTPPort = 80
-vhostHTTPSPort = 443
+#  服务器监听端口（客户端需要通过该端口连接 FRP 服务器）
+bindPort = 20002
 
-transport.maxPoolCount = 2000
-transport.tcpMux = true
-transport.tcpMuxKeepaliveInterval = 60
-transport.tcpKeepalive = 7200
-transport.tls.force = false
+# HTTP 端口（用于内网 HTTP 代理穿透）
+#vhostHTTPPort = 80
 
+# HTTPS 端口（用于内网 HTTPS 代理穿透）
+#vhostHTTPSPort = 443
+
+# =============================================
+# Web 控制台（Dashboard）配置
+# =============================================
+
+# 监控界面监听地址（`0.0.0.0` 代表所有 IP 可访问）
 webServer.addr = "0.0.0.0"
-webServer.port = 7500
-webServer.user = "admin"
-webServer.password = "admin"
-webServer.pprofEnable = false
 
+# Web 管理面板端口（可在浏览器访问，默认 7500）
+# 你可以通过 `http://你的公网IP:7500` 访问 FRP 管理面板
+webServer.port = 20001
+
+# Web 控制台管理账号（可自定义）
+webServer.user = "admin"
+
+# Web 控制台密码（请自行修改）
+webServer.password = "admin"
+
+# =============================================
+# 身份验证（Authentication）配置
+# =============================================
+
+#  认证方式（防止未经授权的客户端连接）
+# 目前 FRP 支持 `token` 和 `oidc` 方式，我们选用token
+auth.method = "token"
+
+#  Token 认证（客户端需要匹配相同 token 才能连接）
+# 通俗来说就是密码，写一个你能记住的，尽量长一点
+# 示例: 123-abc-123abc，请自行修改
+auth.token = "123-abc-123abc"   
+
+#logs
 log.to = "./frps.log"
 log.level = "info"
 log.maxDays = 3
 log.disablePrintColor = false
-
-auth.method = "token"
-auth.token = "12345678"
-
-allowPorts = [
-  { start = 10001, end = 50000 }
-]
-
-maxPortsPerClient = 8
-udpPacketSize = 1500
-natholeAnalysisDataReserveHours = 168
